@@ -64,3 +64,10 @@ export function fetchVerify<T>(token: string) {
     data: { token },
   })
 }
+
+export function translate(text: string, source: string, target: string) {
+  return post<string>({
+    url: '/translate',
+    data: { sourceText: text, sourceLanguage: source, targetLanguage: target },
+  })
+}

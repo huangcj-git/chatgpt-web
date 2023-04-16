@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script lang="ts" setup xmlns="http://www.w3.org/1999/html">
 import { computed, ref } from 'vue'
 import MarkdownIt from 'markdown-it'
 import mdKatex from '@traptitech/markdown-it-katex'
@@ -13,6 +13,7 @@ interface Props {
   text?: string
   loading?: boolean
   asRawText?: boolean
+  translateText?: string
 }
 
 const props = defineProps<Props>()
@@ -64,17 +65,26 @@ defineExpose({ textRef })
 </script>
 
 <template>
-  <div class="text-black" :class="wrapClass">
-    <div ref="textRef" class="leading-relaxed break-words">
-      <div v-if="!inversion">
-        <div v-if="!asRawText" class="markdown-body" v-html="text" />
+  <div style="flex-direction: column">
+    <!-- region 显示原文 -->
+    <div class="text-black" :class="wrapClass">
+      <div ref="textRef" class="leading-relaxed break-words">
+        <div v-if="!inversion">
+          <div v-if="!asRawText" class="markdown-body" v-html="text" />
+          <div v-else class="whitespace-pre-wrap" v-text="text" />
+        </div>
         <div v-else class="whitespace-pre-wrap" v-text="text" />
+        <template v-if="loading">
+          <span class="dark:text-white w-[4px] h-[20px] block animate-blink" />
+        </template>
       </div>
-      <div v-else class="whitespace-pre-wrap" v-text="text" />
-      <template v-if="loading">
-        <span class="dark:text-white w-[4px] h-[20px] block animate-blink" />
-      </template>
     </div>
+    <!-- endregion -->
+    <!-- region translateText 不是空格，显示翻译  -->
+    <div v-if="translateText" class="text-black" :class="wrapClass" style="margin-top: 5px">
+      <div class="whitespace-pre-wrap" v-text="translateText" />
+    </div>
+    <!-- endregion -->
   </div>
 </template>
 

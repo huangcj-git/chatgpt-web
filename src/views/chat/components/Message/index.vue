@@ -8,6 +8,7 @@ import { copyText } from '@/utils/format'
 import { useIconRender } from '@/hooks/useIconRender'
 import { t } from '@/locales'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
+import { translate } from '@/api'
 
 interface Props {
   dateTime?: string
@@ -34,6 +35,8 @@ const textRef = ref<HTMLElement>()
 
 const asRawText = ref(props.inversion)
 
+const translateText = ref('')
+
 const messageRef = ref<HTMLElement>()
 
 const options = computed(() => {
@@ -48,6 +51,11 @@ const options = computed(() => {
       key: 'delete',
       icon: iconRender({ icon: 'ri:delete-bin-line' }),
     },
+    {
+      label: t('common.translate'),
+      key: 'translate',
+      icon: iconRender({ icon: 'ri:translate' }),
+    },
   ]
 
   if (!props.inversion) {
@@ -61,7 +69,7 @@ const options = computed(() => {
   return common
 })
 
-function handleSelect(key: 'copyText' | 'delete' | 'toggleRenderType') {
+function handleSelect(key: 'copyText' | 'delete' | 'toggleRenderType' | 'translate') {
   switch (key) {
     case 'copyText':
       copyText({ text: props.text ?? '' })
@@ -71,12 +79,20 @@ function handleSelect(key: 'copyText' | 'delete' | 'toggleRenderType') {
       return
     case 'delete':
       emit('delete')
+      return
+    case 'translate':
+      handleTranslate(props)
   }
 }
 
 function handleRegenerate() {
   messageRef.value?.scrollIntoView()
   emit('regenerate')
+}
+
+async function handleTranslate(props: Props) {
+  const response = await translate(props.text ?? '', 'auto', 'en')
+	translateText.value = response.data
 }
 </script>
 
@@ -107,6 +123,7 @@ function handleRegenerate() {
           :text="text"
           :loading="loading"
           :as-raw-text="asRawText"
+          :translate-text="translateText"
         />
         <div class="flex flex-col">
           <button
