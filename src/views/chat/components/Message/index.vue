@@ -8,11 +8,11 @@ import { copyText } from '@/utils/format'
 import { useIconRender } from '@/hooks/useIconRender'
 import { t } from '@/locales'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
-import { translate } from '@/api'
 
 interface Props {
   dateTime?: string
   text?: string
+  translateText?: string
   inversion?: boolean
   error?: boolean
   loading?: boolean
@@ -21,6 +21,7 @@ interface Props {
 interface Emit {
   (ev: 'regenerate'): void
   (ev: 'delete'): void
+  (ev: 'translate'): void
 }
 
 const props = defineProps<Props>()
@@ -34,8 +35,6 @@ const { iconRender } = useIconRender()
 const textRef = ref<HTMLElement>()
 
 const asRawText = ref(props.inversion)
-
-const translateText = ref('')
 
 const messageRef = ref<HTMLElement>()
 
@@ -81,7 +80,7 @@ function handleSelect(key: 'copyText' | 'delete' | 'toggleRenderType' | 'transla
       emit('delete')
       return
     case 'translate':
-      handleTranslate(props)
+      handleTranslate()
   }
 }
 
@@ -90,9 +89,8 @@ function handleRegenerate() {
   emit('regenerate')
 }
 
-async function handleTranslate(props: Props) {
-  const response = await translate(props.text ?? '', 'auto', 'en')
-	translateText.value = response.data
+function handleTranslate() {
+  emit('translate')
 }
 </script>
 

@@ -14,7 +14,7 @@ import HeaderComponent from './components/Header/index.vue'
 import { HoverButton, SvgIcon } from '@/components/common'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { useChatStore, usePromptStore } from '@/store'
-import { fetchChatAPIProcess } from '@/api'
+import { fetchChatAPIProcess, translate } from '@/api'
 import { t } from '@/locales'
 
 let controller = new AbortController()
@@ -374,6 +374,12 @@ function handleDelete(index: number) {
   })
 }
 
+async function handleDoTranslate(index: number, chat: Chat.Chat) {
+  const response = await translate(chat.text ?? '', 'auto', 'en')
+  chat.translateText = response.data
+  chatStore.updateChatByUuid(+uuid, index, chat)
+}
+
 function handleClear() {
   if (loading.value)
     return
@@ -494,11 +500,13 @@ onUnmounted(() => {
                 :key="index"
                 :date-time="item.dateTime"
                 :text="item.text"
+                :translate-text="item.translateText"
                 :inversion="item.inversion"
                 :error="item.error"
                 :loading="item.loading"
                 @regenerate="onRegenerate(index)"
                 @delete="handleDelete(index)"
+                @translate="handleDoTranslate(index, item)"
               />
               <div class="sticky bottom-0 left-0 flex justify-center">
                 <NButton v-if="loading" type="warning" @click="handleStop">
