@@ -2,21 +2,21 @@
 import { ref } from 'vue'
 import { NButton, NInput, NSlider, useMessage } from 'naive-ui'
 import { useSettingStore } from '@/store'
-import type { SettingsState } from '@/store/modules/settings/helper'
+import type { ChatSetting } from '@/store/modules/settings/helper'
 import { t } from '@/locales'
 
 const settingStore = useSettingStore()
 
 const ms = useMessage()
 
-const systemMessage = ref(settingStore.systemMessage ?? '')
+const systemMessage = ref(settingStore.default.systemMessage ?? '')
 
-const temperature = ref(settingStore.temperature ?? 0.5)
+const temperature = ref(settingStore.default.temperature ?? 0.5)
 
-const top_p = ref(settingStore.top_p ?? 1)
+const top_p = ref(settingStore.default.top_p ?? 1)
 
-function updateSettings(options: Partial<SettingsState>) {
-  settingStore.updateSetting(options)
+function updateSettings(options: Partial<ChatSetting>) {
+  settingStore.updateDefaultSetting(options)
   ms.success(t('common.success'))
 }
 

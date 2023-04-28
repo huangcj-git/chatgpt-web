@@ -38,9 +38,7 @@ export function fetchChatAPIProcess<T = any>(
   if (authStore.isChatGPTAPI) {
     data = {
       ...data,
-      systemMessage: settingStore.systemMessage,
-      temperature: settingStore.temperature,
-      top_p: settingStore.top_p,
+      ...settingStore.getDefaultChatSetting(),
     }
   }
 

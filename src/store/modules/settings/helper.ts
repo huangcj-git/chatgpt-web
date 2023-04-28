@@ -2,17 +2,25 @@ import { ss } from '@/utils/storage'
 
 const LOCAL_NAME = 'settingsStorage'
 
-export interface SettingsState {
+export interface ChatSetting {
   systemMessage: string
   temperature: number
   top_p: number
 }
 
+export interface SettingsState {
+  chatSettings: Map<number, ChatSetting>
+  default: ChatSetting
+}
+
 export function defaultSetting(): SettingsState {
   return {
-    systemMessage: 'You are ChatGPT, a large language model trained by OpenAI. Follow the user\'s instructions carefully. Respond using markdown.',
-    temperature: 0.8,
-    top_p: 1,
+    chatSettings: new Map(),
+    default: {
+      systemMessage: 'You are ChatGPT, a large language model trained by OpenAI. Follow the user\'s instructions carefully. Respond using markdown.',
+      temperature: 0.8,
+      top_p: 1,
+    },
   }
 }
 

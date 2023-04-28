@@ -10,6 +10,7 @@ import { useScroll } from './hooks/useScroll'
 import { useChat } from './hooks/useChat'
 import { useUsingContext } from './hooks/useUsingContext'
 import HeaderComponent from './components/Header/index.vue'
+import SysMsgPopUp from './layout/SysMsgPopUp.vue'
 import { HoverButton, SvgIcon } from '@/components/common'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { useChatStore, usePromptStore } from '@/store'
@@ -38,6 +39,7 @@ const conversationList = computed(() => dataSources.value.filter(item => (!item.
 
 const prompt = ref<string>('')
 const loading = ref<boolean>(false)
+const showSysMsgPopUp = ref<boolean>(false)
 const inputRef = ref<Ref | null>(null)
 
 // 添加PromptStore
@@ -314,6 +316,10 @@ async function onRegenerate(index: number) {
   }
 }
 
+function handleSetSysMsg() {
+  showSysMsgPopUp.value = true
+}
+
 function handleExport() {
   if (loading.value)
     return
@@ -528,6 +534,11 @@ onUnmounted(() => {
               <SvgIcon icon="ri:chat-history-line" />
             </span>
           </HoverButton>
+          <HoverButton @click="handleSetSysMsg">
+            <span class="text-xl text-[#4f555e] dark:text-white">
+              <SvgIcon icon="ri:command-line" />
+            </span>
+          </HoverButton>
           <NAutoComplete v-model:value="prompt" :options="searchOptions" :render-label="renderOption">
             <template #default="{ handleInput, handleBlur, handleFocus }">
               <NInput
@@ -554,4 +565,5 @@ onUnmounted(() => {
       </div>
     </footer>
   </div>
+  <SysMsgPopUp v-model:visible="showSysMsgPopUp" v-model:uuid="uuid" />
 </template>
